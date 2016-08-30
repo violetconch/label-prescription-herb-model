@@ -26,15 +26,18 @@ public class LPHLDA {
 	int[] ndsum;
 	
 	int[] xi;
+	
+	int[] Compatdata;  //配伍数据；
 
 	int iterations;
 
 	Map<Integer, Set<Integer>> zsets;
 
-	public LPHLDA(int[][] docs, int V, Map<Integer, Set<Integer>> zsets) {
+	public LPHLDA(int[][] docs, int V, Map<Integer, Set<Integer>> zsets, int[] Compatdata) {
 		this.documents = docs;
 		this.V = V;
 		this.zsets = zsets;
+		this.Compatdata = Compatdata;
 
 	}
 
@@ -114,12 +117,20 @@ public class LPHLDA {
 
 		for (int k = 0; k < K; k++) {
 
-			p[k] = (nd[d][k] + alpha[d][k]) / (ndsum[d] + alpha_sum)
-					* (nw[documents[d][n]][k] + beta) / (nwsum[k] + V * beta);
-
-			// zset resriction
+			
 
 			int vocab_index = documents[d][n];
+			
+			if ( xi[vocab_index]==0 )
+					p[k] = (nd[d][k] + alpha[d][k]) / (ndsum[d] + alpha_sum)
+					* (nw[vocab_index][k] + beta) / (nwsum[k] + V * beta);
+			
+			if ( xi[vocab_index]==1 )
+			{
+				int vocab_index_b = Compatdata[vocab_index];
+				p[k] = (nd[d][k] + alpha[d][k] - 1) / (ndsum[d] + alpha_sum - 1)
+				* (nw[vocab_index][k] + beta) / (nwsum[k] + V * beta - 1);
+			}
 
 			Set<Integer> zset = zsets.get(vocab_index);
 
