@@ -13,7 +13,7 @@ public class LPHLDA {
 
 	double[][] alpha;
 
-	double beta;
+	double nita;
 
 	int[][] z;
 
@@ -72,11 +72,11 @@ public class LPHLDA {
 
 	}
 
-	public void markovChain(int K, double[][] alpha, double beta, int iterations) {
+	public void markovChain(int K, double[][] alpha, double nita, int iterations) {
 
 		this.K = K;
 		this.alpha = alpha;
-		this.beta = beta;
+		this.nita = nita;
 		this.iterations = iterations;
 
 		initialState();
@@ -123,13 +123,13 @@ public class LPHLDA {
 			
 			if ( xi[vocab_index]==0 )
 					p[k] = (nd[d][k] + alpha[d][k]) / (ndsum[d] + alpha_sum)
-					* (nw[vocab_index][k] + beta) / (nwsum[k] + V * beta);
+					* (nw[vocab_index][k] + nita) / (nwsum[k] + V * nita);
 			
 			if ( xi[vocab_index]==1 )
 			{
 				int vocab_index_b = Compatdata[vocab_index];
 				p[k] = (nd[d][k] + alpha[d][k] - 1) / (ndsum[d] + alpha_sum - 1)
-				* (nw[vocab_index][k] + beta) / (nwsum[k] + V * beta - 1);
+				* (nw[vocab_index][k] + nita) / (nwsum[k] + V * nita - 1);
 			}
 
 			Set<Integer> zset = zsets.get(vocab_index);
@@ -186,7 +186,7 @@ public class LPHLDA {
 		double[][] phi = new double[K][V];
 		for (int k = 0; k < K; k++) {
 			for (int w = 0; w < V; w++) {
-				phi[k][w] = (nw[w][k] + beta) / (nwsum[k] + V * beta);
+				phi[k][w] = (nw[w][k] + nita) / (nwsum[k] + V * nita);
 			}
 		}
 		return phi;
